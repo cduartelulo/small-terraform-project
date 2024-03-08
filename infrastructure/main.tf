@@ -45,6 +45,27 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_iam_role" "iam_for_lambda" {
   name               = "iam_for_lambda"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  inline_policy {
+    name = "my_inline_policy"
+
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action   = [
+            "sqs:*",
+            "dynamodb:*"
+          ]
+          Effect   = "Allow"
+          Resource = "*"
+        },
+      ]
+    })
+  }
+
+  tags = {
+    Team = "dojo"
+  }
 }
 
 data "archive_file" "lambda" {
@@ -111,45 +132,5 @@ resource "aws_dynamodb_table" "basic-dynamodb-table" {
 
   tags = {
     Team       = "dojo"
-  }
-}
-
-# IAM ROLE - LAMBDA
-
-resource "aws_iam_role" "test_lambda_role" {
-  name = "test_lambda_role"
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-#  assume_role_policy = jsonencode({
-#    Version = "2012-10-17"
-#    Statement = [
-#      {
-#        Action = "sts:AssumeRole"
-#        Effect = "Allow"
-#        Sid    = ""
-#        Principal = {
-#          "Service": "lambda.amazonaws.com"
-#        }
-#      },
-#    ]
-#  })
-  inline_policy {
-    name = "my_inline_policy"
-
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Action   = ["ec2:Describe*"]
-          Effect   = "Allow"
-          Resource = "*"
-        },
-      ]
-    })
-  }
-
-  tags = {
-    tag-key = "tag-value"
   }
 }
