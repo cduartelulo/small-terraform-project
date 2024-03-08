@@ -9,7 +9,7 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
-  profile = "digital-bank-developers"
+  profile = "dev"
 }
 
 data "aws_caller_identity" "current" {}
@@ -86,3 +86,30 @@ resource "aws_sqs_queue" "terraform_queue_deadletter" {
   name = "terraform-dojo-deadletter-queue"
 }
 
+### DYNAMODB TABLE ###
+
+resource "aws_dynamodb_table" "basic-dynamodb-table" {
+  name           = "Terraform-dojo"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "UserId"
+  range_key      = "GameTitle"
+
+  attribute {
+    name = "UserId"
+    type = "S"
+  }
+
+  attribute {
+    name = "GameTitle"
+    type = "S"
+  }
+
+  ttl {
+    attribute_name = "TimeToExist"
+    enabled        = false
+  }
+
+  tags = {
+    Team       = "dojo"
+  }
+}
