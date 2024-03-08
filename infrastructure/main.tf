@@ -9,6 +9,7 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+  profile = "digital-bank-developers"
 }
 
 data "aws_caller_identity" "current" {}
@@ -48,7 +49,7 @@ resource "aws_iam_role" "iam_for_lambda" {
 
 data "archive_file" "lambda" {
   type        = "zip"
-  source_file = "src/index.js"
+  source_dir = "../src"
   output_path = "lambda_function_payload.zip"
 }
 
