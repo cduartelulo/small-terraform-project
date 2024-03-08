@@ -149,11 +149,6 @@ resource "aws_iam_role" "test_lambda_role" {
     })
   }
 
-  inline_policy {
-    name   = "policy-8675309"
-    policy = data.aws_iam_policy_document.inline_policy.json
-  }
-
   tags = {
     tag-key = "tag-value"
   }
