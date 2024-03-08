@@ -65,3 +65,24 @@ resource "aws_lambda_function" "test_lambda" {
 
   runtime = "nodejs18.x"
 }
+
+resource "aws_sqs_queue" "terraform_queue_dojo" {
+  name                      = "terraform-dojo-queue"
+  max_message_size          = 2048
+  message_retention_seconds = 86400
+  receive_wait_time_seconds = 10
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.terraform_queue_deadletter.arn
+    maxReceiveCount     = 4
+  })
+
+
+  tags = {
+    Team = "dojo"
+  }
+}
+
+resource "aws_sqs_queue" "terraform_queue_deadletter" {
+  name = "terraform-dojo-deadletter-queue"
+}
+
