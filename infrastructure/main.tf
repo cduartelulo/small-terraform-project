@@ -1,17 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-      version = "5.39.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = var.aws_region
-  profile = var.aws_profile
-}
-
 data "aws_caller_identity" "current" {}
 
 locals {
@@ -125,12 +111,7 @@ resource "aws_dynamodb_table" "basic-dynamodb-table" {
     type = "S"
   }
 
-  ttl {
-    attribute_name = "TimeToExist"
-    enabled        = false
-  }
-
   tags = {
-    Team       = "dojo"
+    Team       = "Dojo"
   }
 }
