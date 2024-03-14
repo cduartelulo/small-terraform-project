@@ -56,7 +56,7 @@ resource "aws_iam_role" "iam_for_lambda" {
 
 data "archive_file" "lambda" {
   type        = "zip"
-  source_dir = "../src"
+  source_dir = "../lambda/src"
   output_path = "lambda_function_payload.zip"
 }
 
