@@ -1,0 +1,1 @@
+aws_profile = "digital-bank-developers"
