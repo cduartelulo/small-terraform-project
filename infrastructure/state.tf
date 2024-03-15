@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 1.7"
+  required_version = "~> 1.2"
   backend "s3" {
     bucket         = "sion-terraform-dojo"
     key            = "terraform.tfstate"
