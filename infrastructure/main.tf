@@ -115,3 +115,25 @@ resource "aws_dynamodb_table" "basic-dynamodb-table" {
     Team       = "Dojo"
   }
 }
+
+resource "aws_api_gateway_rest_api" "terraform_api_gateway" {
+  name = "terraform_api_gateway"
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
+
+resource "aws_api_gateway_deployment" "terraform_api_gateway_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.terraform_api_gateway.id
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "terraform_api_gateway_stage" {
+  deployment_id = aws_api_gateway_deployment.terraform_api_gateway_deployment.id
+  rest_api_id   = aws_api_gateway_rest_api.terraform_api_gateway.id
+  stage_name    = "dev"
+}
