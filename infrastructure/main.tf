@@ -130,10 +130,25 @@ resource "aws_api_gateway_deployment" "terraform_api_gateway_deployment" {
   lifecycle {
     create_before_destroy = true
   }
+#  depends_on = [aws_api_gateway_rest_api.terraform_api_gateway]
 }
 
 resource "aws_api_gateway_stage" "terraform_api_gateway_stage" {
   deployment_id = aws_api_gateway_deployment.terraform_api_gateway_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.terraform_api_gateway.id
   stage_name    = "dev"
+#  depends_on = [aws_api_gateway_rest_api.terraform_api_gateway]
+}
+
+resource "aws_api_gateway_resource" "terraform_api_resource_message" {
+  rest_api_id = aws_api_gateway_rest_api.terraform_api_gateway.id
+  parent_id   = aws_api_gateway_rest_api.terraform_api_gateway.root_resource_id
+  path_part   = "message"
+}
+
+resource "aws_api_gateway_method" "terraform_api_gateway_method_post" {
+  rest_api_id   = aws_api_gateway_rest_api.terraform_api_gateway.id
+  resource_id   = aws_api_gateway_resource.terraform_api_resource_message.id
+  http_method   = "POST"
+  authorization = "NONE"
 }
