@@ -152,3 +152,20 @@ resource "aws_api_gateway_method" "terraform_api_gateway_method_post" {
   http_method   = "POST"
   authorization = "NONE"
 }
+
+resource "aws_api_gateway_integration" "lambda_integration" {
+  rest_api_id          = aws_api_gateway_rest_api.terraform_api_gateway.id
+  resource_id          = aws_api_gateway_resource.terraform_api_resource_message.id
+  http_method          = aws_api_gateway_method.terraform_api_gateway_method_post.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.test_lambda.invoke_arn
+}
+
+resource "aws_lambda_permission" "apigw_lambda" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.test_lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn = "arn:aws:execute-api:${var.aws_region}:900852371335:${aws_api_gateway_rest_api.terraform_api_gateway.id}/*/${aws_api_gateway_method.terraform_api_gateway_method_post.http_method}${aws_api_gateway_resource.terraform_api_resource_message.path}"
+}
